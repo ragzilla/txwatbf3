@@ -215,6 +215,7 @@ class ClientRconProtocol(FBRconProtocol):
 			pl = players[player]
 			ph = self.server.addPlayer(pl['name'], pl['guid'])
 		self.postMessage("status", "connectionMade")
+		self.factory.resetDelay()
 	
 	def postMessage(self, facility, message):
 		self.factory.rm.postMessage("servers.%s.%s" % (self.params["tag"], facility), message)
