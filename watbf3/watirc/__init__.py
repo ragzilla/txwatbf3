@@ -63,26 +63,26 @@ class watircBot(PyFiBot):
 		log.info("connection made")
 		### set up a subscription
 		rc    = self.network.data["root"].getRcon()
-		rc.subMessage("servers.kfs3.server.onLevelLoaded", self.onLevelLoaded)
-		rc.subMessage("servers.kfs3.player.onJoin", self.onJoin)
-		rc.subMessage("servers.kfs3.player.onChat", self.onChat)
+		# rc.subMessage("servers.kfs3.server.onLevelLoaded", self.onLevelLoaded)
+		# rc.subMessage("servers.kfs3.player.onJoin", self.onJoin)
+		# rc.subMessage("servers.kfs3.player.onChat", self.onChat)
 	
 	def sendNotify(self, message):
 		### a shortcut for event driven stuff
 		self.say(self.network.data["notify"], str(message))
 	
 	# rcon level load callback
-	def onLevelLoaded(self, params):
-		self.sendNotify("MAPCHANGE: %(level)s (%(mode)s) [Round %(curRound)u/%(maxRound)u]" % params)
+	# def onLevelLoaded(self, params):
+	# 	self.sendNotify("MAPCHANGE: %(level)s (%(mode)s) [Round %(curRound)u/%(maxRound)u]" % params)
 	
-	def onJoin(self, params):
-		# if params['isgoon']:
-			# self.sendNotify("GOONJOIN: %(player)s" % params)
-			isgoon = params['isgoon'] # nullop without using pass
+	# def onJoin(self, params):
+	# 	# if params['isgoon']:
+	#		# self.sendNotify("GOONJOIN: %(player)s" % params)
+	#		isgoon = params['isgoon'] # nullop without using pass
 	
-	def onChat(self, params):
-		# self.sendNotify("%(player)s: %(message)s" % params)
-		foo = params # nullop
+	# def onChat(self, params):
+	# 	# self.sendNotify("%(player)s: %(message)s" % params)
+	#	foo = params # nullop
 	
 	@defer.inlineCallbacks
 	def _command(self, user, channel, cmnd):
