@@ -21,7 +21,7 @@ def inlinecommand_checkgoon(bot, user, channel, args):
 			bot.say(reply, "No match found")
 			return
 	ref   = res[0]['safname']
-	owner = yield mongo.ref.collection].find_one(ref.id)
+	owner = yield mongo[ref.collection].find_one(ref.id)
 	names = []
 	for bf3name in res:
 		names.append(bf3name['bf3name'])

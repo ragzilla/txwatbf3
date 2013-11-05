@@ -175,7 +175,7 @@ def getwatircClient(root, config):
 		# normalize channel names to prevent internal confusion
 		chanlist = []
 		for channel in settings['channels']:
-			if settings['channels'] is list or settings['channels'][channel]['enabled']:
+			if settings['channels'] is list or settings['channels'][channel]['enable']:
 				if channel[0] not in '&#!+':
 					channel = '#' + channel
 				chanlist.append(channel)
