@@ -7,17 +7,21 @@ from clientrcon import getClientRconFactory
 class RconManager(MultiService):
 	""" runs multiple rcon instances """
 	mongo   = None
+	root    = None
+	config  = None
 	servers = {}
 	subs    = {}
 	
-	def __init__(self):
+	def __init__(self, root, config):
+		self.root = root
+		self.config = config
 		MultiService.__init__(self)
 	
 	@defer.inlineCallbacks
 	def startService(self):
 		print "RconManager.startService..."
-		self.mongo   = self.getRootService().getMongo()
-		servers = yield self.mongo.servers.find()
+		self.mongo   = self.root.getMongo()
+		servers      = self.config['servers']
 		for server in servers:
 			print "Starting server:",server
 			factory = getClientRconFactory(server, self)
