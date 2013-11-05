@@ -43,12 +43,25 @@ levelhash = {
 	'XP1_002': 'Gulf of Oman',
 	'XP1_003': 'Sharqi Peninsula',
 	'XP1_004': 'Wake Island',
+	'MP_Abandoned': 'Zavod 311',
+	'MP_Damage': 'Lancang Dam',
+	'MP_Flooded': 'Flood Zone',
+	'MP_Journey': 'Golmud Railway',
+	'MP_Naval': 'Paracel Storm',
+	'MP_Prison': 'Operation Locker',
+	'MP_Resort': 'Hainan Resort',
+	'MP_Siege': 'Siege of Shanghai',
+	'MP_TheDish': 'Rogue Transmission',
+	'MP_Tremors': 'Dawnbreaker',
 }
 
 modehash = {
 	'ConquestLarge0': 'Conquest',
 	'ConquestAssaultLarge0': 'Conquest Assault',
 	'ConquestSmall0': 'Consolequest',
+	'Domination0':    'Domination',
+	'Elimination0':   'Defuse',
+	'Obliteration':   'Obliteration',
 	'RushLarge0':     'Rush',
 	'SquadRush0':     'Squad Rush',
 	'SquadDeathMatch0': 'Squad Deathmatch',
@@ -82,7 +95,12 @@ class ClientRconProtocol(FBRconProtocol):
 		self.callbacks = {}
 		self.server = Server(self)
 	
-	### "OK" "Kentucky Fried Server" "64" "64" "ConquestLarge0" "XP1_001" "0" "2" "2" "60.563736" "109.1357" "0" "" "true" "true" "false" "6972" "781" "" "" "" "NAm" "iad" "US"
+	### OK <serverName: string> <current playercount: integer> <effective max playercount: integer> <current gamemode: string> 
+	### <current map: string> <roundsPlayed: integer> <roundsTotal: string> <scores: team scores> <onlineState: online state> 
+	### <ranked: boolean> <punkBuster: boolean> <hasGamePassword: boolean> <serverUpTime: seconds> <roundTime: seconds> 
+	### <gameIpAndPort: IpPortPair> <punkBusterVersion: string> <joinQueueEnabled: boolean> <region: string> 
+	### <closestPingSite: string> <country: string> <matchMakingEnabled: boolean> <blazePlayerCount: integer> 
+	### <blazeGameState: string> 
 	@defer.inlineCallbacks
 	def serverInfo(self):
 		sinfo = yield self.sendRequest(["serverInfo"])
@@ -135,7 +153,6 @@ class ClientRconProtocol(FBRconProtocol):
 		retval = tmp
 		defer.returnValue(retval)
 
-	
 	@defer.inlineCallbacks
 	def admin_kickPlayer(self, player, reason):
 		retval = yield self.sendRequest(["admin.kickPlayer", player, reason])
