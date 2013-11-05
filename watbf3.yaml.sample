@@ -1,0 +1,42 @@
+# vim: ts=2:sw=2:expandtab
+rcon:
+  enable: False
+  servers: # don't add more than one yet
+    - ip: ''
+      port: 47200
+      tag: 'kfs' # don't touch this, yet
+      secret: ''
+      enable: False
+web:
+  enable: False
+  bind: '0.0.0.0'
+  port: 8080
+irc:
+  enable: False
+  nick: whammy
+  admins:
+    - 'you!you@yourhost.com'
+    - 'them!them@theirhost.com'
+  networks:
+    synirc:
+      channels:
+        '#your_channel':
+          enable: False
+        '#your_other_channel':
+          enable: False
+      linerate: 1
+      server: 'irc.yourirc.net' # irc server, recommend using a bnc like znc
+      port: 7001
+      is_ssl: True
+      password: '' # irc server password
+      data:
+        'services.user': 'NickServ!services@services.yourirc.net'
+        'services.password': '
+        tag: 'kfs' # don't touch this, yet
+        notify: '#your_channel'
+twitter:
+  enable:       False
+  app_key:      ''
+  app_secret:   ''
+  oauth_token:  ''
+  oauth_secret: ''
