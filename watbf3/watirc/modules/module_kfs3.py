@@ -18,7 +18,7 @@ def inlinecommand_kfs3(bot, user, channel, args):
 	plist = []
 	for player in pl:
 		plist.append(str(player).lower())
-	goons = yield mongo.watbf3.bf3names.find({"$and": [
+	goons = yield mongo.bf3names.find({"$and": [
 					{"bf3state": {"$ne": 0}},
 					{"bf3name": {"$in": plist}}
 					]}, fields=['bf3name','bf3state',])

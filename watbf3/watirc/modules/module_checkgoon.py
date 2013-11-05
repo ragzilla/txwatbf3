@@ -12,16 +12,16 @@ def inlinecommand_checkgoon(bot, user, channel, args):
 		bot.say(reply, "Usage: .checkgoon <name>")
 		return
 	name = normalize(args)
-	res  = yield mongo.watbf3.bf3names.find({"bf3name": name})
+	res  = yield mongo.bf3names.find({"bf3name": name})
 	if res == []: # blank document, no bf3name match
-		saf = yield mongo.watbf3.safnames.find_one({"safname": name})
+		saf = yield mongo.safnames.find_one({"safname": name})
 		if saf != {}:
-			res = yield mongo.watbf3.bf3names.find({"safname": DBRef(mongo.watbf3.safnames, saf["_id"])})
+			res = yield mongo.bf3names.find({"safname": DBRef(mongo.safnames, saf["_id"])})
 		else:
 			bot.say(reply, "No match found")
 			return
 	ref   = res[0]['safname']
-	owner = yield mongo.watbf3[ref.collection].find_one(ref.id)
+	owner = yield mongo.ref.collection].find_one(ref.id)
 	names = []
 	for bf3name in res:
 		names.append(bf3name['bf3name'])

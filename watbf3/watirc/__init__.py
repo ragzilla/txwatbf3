@@ -150,7 +150,7 @@ class logHandler(logging.Handler):
 	def emit(self, record):
 		print self.format(record)
 
-def getwatircClient(mongo, root):
+def getwatircClient(root, config):
 	# create a stdio logger or something
 	logger  = logging.getLogger()
 	handler = logHandler()
@@ -158,32 +158,10 @@ def getwatircClient(mongo, root):
 	logger.addHandler(handler)
 	logger.setLevel(logging.INFO)
 	
-	config = {'nick': 'whammy', 
-			  'admins': [
-			  	'ragzilla!ragzilla@evilgeni.us',
-				'daveslash!daveslash@could.you.not',
-				'dannyb!~dannyb@thanks.for.this',
-				'nfcknblvbl!~nfcknblvb@*.hsd1.ga.comcast.net',
-			  ], 
-			  'networks': {
-				'synirc': {
-				  'channels': ['#goonwhores'], 
-				  'linerate': 1, 
-				  'server': 'x', 
-				  'port': 6667, 
-				  'is_ssl': True,
-				  'password': 'x',
-				  'data': {
-				        "services.user":     "NickServ!services@services.synirc.net",
-				        "services.password": "x",
-					"mongo":  mongo,
-					"root":   root,
-					"tag":    "kfs3",
-					"notify": "#goonwhores",
-				    },
-				  }
-				}
-			  }
+	for network in config['networks']:
+		config['networks'][network]['data']['root'] = root
+		config['networks'][network]['data']['mongo'] = root.getMongo()
+
 	factory = watircFactory(config)
 	for network, settings in config['networks'].items():
 		# settings = per network, config = global
@@ -197,9 +175,10 @@ def getwatircClient(mongo, root):
 		# normalize channel names to prevent internal confusion
 		chanlist = []
 		for channel in settings['channels']:
-			if channel[0] not in '&#!+':
-				channel = '#' + channel
-			chanlist.append(channel)
+			if settings['channels'] is list or settings['channels'][channel]['enabled']:
+				if channel[0] not in '&#!+':
+					channel = '#' + channel
+				chanlist.append(channel)
 		# resolve server name here in case it's a round-robin address
 		server_name = socket.getfqdn(settings['server'])
 		factory.createNetwork((server_name, port), network, nick, chanlist, linerate, password, is_ssl, data)

@@ -20,7 +20,7 @@ def inlinecommand_lcaust(bot, user, channel, args):
 	exempt  = []
 	for player in players:
 		plist.append(str(player).lower())
-	goons   = yield mongo.watbf3.bf3names.find({"$and": [
+	goons   = yield mongo.bf3names.find({"$and": [
 						{"bf3state": {"$ne": 0}},
 						{"bf3name": {"$in": plist}}
 						]}, fields=['bf3name','bf3state',])

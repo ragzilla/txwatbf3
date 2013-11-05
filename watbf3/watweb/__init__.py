@@ -1,6 +1,5 @@
 import os
 import cyclone.web
-from twisted.application.internet import TimerService
 from mainhandler import MainHandler
 
 class Application(cyclone.web.Application):
