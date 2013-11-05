@@ -2,35 +2,44 @@
 
 import watweb
 import watirc
-import watrcon
+import watrcon.rconmanager import RconManager
 import txmongo
 from twisted.internet import defer
 from twisted.application.internet import TCPServer
 from twisted.application.service import MultiService
 
 class WATBF3Service(MultiService):
-	mongo   = None
-	options = None
-	rc      = None
+	mongo  = None
+	config = None
+	ic     = None
+	rc     = None
+	twitt  = None
 	
-	def __init__(self, options):
+	def __init__(self, config):
 		MultiService.__init__(self)
-		self.options = options
+		self.config = config
 
 	@defer.inlineCallbacks
 	def startService(self):
 		self.mongo = yield txmongo.MongoConnectionPool()
-		ww = watweb.Application(self.mongo)
-		ic = watirc.getwatircClient(self.mongo, self).setServiceParent(self)
-		ws = TCPServer(self.options['webport'], ww, interface="0.0.0.0").setServiceParent(self)
-		ss = ww.getSessionService().setServiceParent(self)
-		rc = watrcon.getRconManager()
-		rc.setServiceParent(self)
-		self.rc = rc
+		if self.config['web']['enable']:
+			ww = watweb.Application(self, config['web'])
+			ws = TCPServer(self.config['web']['port'], ww, interface=self.config['web']['bind']).setServiceParent(self)
+		if self.config['irc']['enable']:
+			self.ic = watirc.getwatircClient(self, config['irc'])
+			self.ic.setServiceParent(self)
+		if self.config['rcon']['enable']:
+			self.rc = RconManager(self, config['rcon'])
+			self.rc.setServiceParent(self)
+		if self.config['twitter']['enable']:
+			pass # cry
 		MultiService.startService(self)
 	
 	def getRcon(self):
 		return self.rc
+	
+	def getIrc(self):
+		return self.ic
 	
 	def getRootService(self):
 		return self
