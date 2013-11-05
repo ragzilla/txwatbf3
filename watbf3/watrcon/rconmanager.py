@@ -17,7 +17,6 @@ class RconManager(MultiService):
 		self.config = config
 		MultiService.__init__(self)
 	
-	@defer.inlineCallbacks
 	def startService(self):
 		print "RconManager.startService..."
 		self.mongo   = self.root.getMongo()
