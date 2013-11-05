@@ -2,18 +2,19 @@
 
 import watweb
 import watirc
-from watrcon.rconmanager import RconManager
 import txmongo
 from twisted.internet import defer
 from twisted.application.internet import TCPServer
 from twisted.application.service import MultiService
+from watrcon.rconmanager import RconManager
+from twython import Twython
 
 class WATBF3Service(MultiService):
 	mongo  = None
 	config = None
 	ic     = None
 	rc     = None
-	twitt  = None
+	tw     = None
 	
 	def __init__(self, config):
 		MultiService.__init__(self)
@@ -32,7 +33,8 @@ class WATBF3Service(MultiService):
 			self.rc = RconManager(self, self.config['rcon'])
 			self.rc.setServiceParent(self)
 		if self.config['twitter']['enable']:
-			pass # cry
+			twcfg = self.config['twitter']
+			self.tw = Twython(twcfg['app_key'], twcfg['app_secret'], twcfg['oauth_token'], twcfg['oauth_secret'])
 		MultiService.startService(self)
 	
 	def getRcon(self):
@@ -46,3 +48,6 @@ class WATBF3Service(MultiService):
 	
 	def getMongo(self):
 		return self.mongo.watbf3
+	
+	def getTwitter(self):
+		return self.tw

@@ -10,6 +10,7 @@ def inlinecommand_lcaust(bot, user, channel, args):
 	reply = bot.replyto(user, channel)
 	mongo = bot.network.data["mongo"] # shortcut
 	rc    = bot.network.data["root"].getRcon()
+	tw    = bot.network.data["root"].getTwitter()
 	tag   = bot.network.data["tag"]
 	inst  = rc.getInstance(tag)
 	
@@ -43,5 +44,8 @@ def inlinecommand_lcaust(bot, user, channel, args):
 			response = yield inst.admin_kickPlayer(victim, "freeing slots for members")
 
 		bot.say(reply, "!lcaust: kicked: %s" % (", ".join(kicked)))
+
+		if tw:
+			tw.update_status(status='Sorry ' + ', '.join(kicked) + ' #kfsbf4')
 	else:
 		bot.say(reply, "!lcaust: Not enough slots in use.")
