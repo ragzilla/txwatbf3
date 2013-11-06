@@ -1,9 +1,10 @@
 from cyclone.web import RequestHandler
 from twisted.internet import defer
+from resthandler import RestHandler
 
+class MainHandler(RestHandler):
 
-class MainHandler(RequestHandler):
-
-	@defer.inlineCallbacks
+	# @defer.inlineCallbacks
 	def get(self):
-		self.write('FUCK')
+		RestHandler.get(self, {'app':'watbf3','version':'0.1'})
+		# defer.succeed(None)

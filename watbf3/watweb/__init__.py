@@ -1,6 +1,7 @@
 import os
 import cyclone.web
 from mainhandler import MainHandler
+from serverhandler import ServerHandler
 
 class Application(cyclone.web.Application):
 	config = None
@@ -8,6 +9,8 @@ class Application(cyclone.web.Application):
 	def __init__(self, root, config):
 		handlers = [
 			(r"/", MainHandler),
+			(r"/servers/?", ServerHandler),
+			(r"/servers/([\w]+)/?", ServerHandler),
 			]
 		settings = dict(
 			root = root,

@@ -6,10 +6,11 @@ class Player:
 		self.name  = name
 		self.lname = name.lower()
 		self.guid  = guid
-		print "adding:",self.lname
+		#print "adding:",self.lname
 	
 	def finalize(self):
 		pass
 	
 	def onAuthenticated(self):
-		print "%s authenticated." % (self.lname)
+		#print "%s authenticated." % (self.lname)
+		pass

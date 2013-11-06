@@ -35,6 +35,9 @@ class RconManager(MultiService):
 		if tag in self.servers:
 			return self.servers[tag]["factory"].instance
 		return None
+	
+	def getInstances(self):
+		return self.servers.keys()
 
 	def sendRcon(self, tag, strings):
 		if tag in self.servers:
