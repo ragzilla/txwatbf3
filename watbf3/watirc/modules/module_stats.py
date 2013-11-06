@@ -22,4 +22,7 @@ def inlinecommand_stats(bot, user, channel, args):
 		return
 	
 	stats = yield st.getStats(args)
-	bot.say(reply, "\x02stats\x02: %(personaName)s: Rank: %(rank)u | Score: %(score)u | Skill: %(skill)u | SPM: %(scorePerMinute)u | KDR: %(kdRatio).2f | WLR: %(wlRatio).2f" % stats)
+	if stats == None:
+		bot.say(reply, "\x02stats\x02: %s not found" % args)
+	else:
+		bot.say(reply, "\x02stats\x02: %(personaName)s: Rank: %(rank)u | Score: %(score)u | Skill: %(skill)u | SPM: %(scorePerMinute)u | KDR: %(kdRatio).2f | WLR: %(wlRatio).2f" % stats)
