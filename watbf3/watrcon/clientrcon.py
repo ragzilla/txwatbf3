@@ -112,7 +112,28 @@ class ClientRconProtocol(FBRconProtocol):
 			'level': levelhash[sinfo[5]],
 			'roundsPlayed': int(sinfo[6]) + 1,
 			'roundsTotal': int(sinfo[7]),
+			'numTeamScores': int(sinfo[8]),
 		}
+		# process team scores
+		off = 9 + retval['numTeamScores'] # 9 = offset + 1 to get us past the teamScores
+		retval.update({
+			'targetScore':       int(sinfo[off+0]),
+			'onlineState':       sinfo[off+1],
+			'ranked':            sinfo[off+2] == 'true',
+			'punkBuster':        sinfo[off+3] == 'true',
+			'hasGamePassword':   sinfo[off+4] == 'true',
+			'serverUpTime':      int(sinfo[off+5]),
+			'roundTime':         int(sinfo[off+6]),
+			'gameIpAndPort' :    sinfo[off+7],
+			'punkBusterVersion': sinfo[off+8],
+			'joinQueueEnabled':  sinfo[off+9] == 'true',
+			'region':            sinfo[off+10],
+			'closestPingSite':   sinfo[off+11],
+			'country':           sinfo[off+12],
+			# 'matchMakingEnabled' # not enabled yet?
+			'blazePlayerCount':  int(sinfo[off+13]),
+			'blazeGameState':    sinfo[off+14],
+		})
 		defer.returnValue(retval)
 	
 	def nullop(self, packet):
