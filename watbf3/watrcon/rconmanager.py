@@ -48,12 +48,14 @@ class RconManager(MultiService):
 		return self.parent.getRootService()
 	
 	def postMessage(self, facility, params):
+		facility = facility.lower()
 		print "postMessage(%s): %s" % (facility,params,)
 		if facility in self.subs:
 			for callback in self.subs[facility]:
 				callback(params)
 	
 	def subMessage(self, facility, callback):
+		facility = facility.lower()
 		if facility in self.subs:
 			self.subs[facility].append(callback)
 		else:
