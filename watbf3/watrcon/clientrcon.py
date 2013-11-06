@@ -5,6 +5,7 @@ from twisted.internet import defer
 from twisted.internet.defer import Deferred
 from twisted.internet.protocol import ReconnectingClientFactory
 from serverstate.server import Server
+from math import floor
 
 from fbrcon import FBRconFactory, FBRconProtocol
 
@@ -97,14 +98,19 @@ class ClientRconProtocol(FBRconProtocol):
 			'maxPlayers': int(sinfo[3]),
 			'mode': modehash[sinfo[4]],
 			'level': levelhash[sinfo[5]]['name'],
-			'factions': levelhash[sinfo[5]]['factions'],
 			'roundsPlayed': int(sinfo[6]) + 1,
 			'roundsTotal': int(sinfo[7]),
 			'numTeamScores': int(sinfo[8]),
 		}
 		# process team scores
 
-		## 
+		if retval['numTeamScores'] == 2:
+			retval['teams'] = [
+				{ 'faction': levelhash[sinfo[5]]['factions'][0], 'score': int(floor(float(sinfo[9])))},
+				{ 'faction': levelhash[sinfo[5]]['factions'][1], 'score': int(floor(float(sinfo[10])))},
+			]
+		else:
+			retval['teams'] = []
 
 		off = 9 + retval['numTeamScores'] # 9 = offset + 1 to get us past the teamScores
 		retval.update({
