@@ -7,6 +7,7 @@ from twisted.internet import defer
 from twisted.application.internet import TCPServer
 from twisted.application.service import MultiService
 from watrcon.rconmanager import RconManager
+from watstats import StatsProvider
 from twython import Twython
 
 class WATBF3Service(MultiService):
@@ -15,6 +16,7 @@ class WATBF3Service(MultiService):
 	ic     = None
 	rc     = None
 	tw     = None
+	st     = None
 	
 	def __init__(self, config):
 		MultiService.__init__(self)
@@ -35,6 +37,8 @@ class WATBF3Service(MultiService):
 		if self.config['twitter']['enable']:
 			twcfg = self.config['twitter']
 			self.tw = Twython(twcfg['app_key'], twcfg['app_secret'], twcfg['oauth_token'], twcfg['oauth_secret'])
+		if self.config['stats']['enable']:
+			self.st = StatsProvider(self, self.config['stats'])
 		MultiService.startService(self)
 	
 	def getRcon(self):
@@ -51,3 +55,6 @@ class WATBF3Service(MultiService):
 	
 	def getTwitter(self):
 		return self.tw
+	
+	def getStats(self):
+		return self.st

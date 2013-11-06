@@ -15,6 +15,7 @@ config = {
 	'rcon':    { 'enable': False, },
 	'twitter': { 'enable': False, },
 	'web':     { 'enable': False, },
+	'stats':   { 'enable': False, },
 }
 siteconfig = yaml_load(open('watbf3.yaml'))
 config.update(siteconfig)
