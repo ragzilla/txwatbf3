@@ -32,6 +32,12 @@ def inlinecommand_kfs(bot, user, channel, args):
 	bot.say(reply, str(output))
 	
 	output = "%(level)s (%(mode)s) [Round %(roundsPlayed)u/%(roundsTotal)u]" % si
+	teamoutput = []
+	for team in si['teams']:
+		teamoutput.append("%(faction)s: %(score)u" % team)
+	si['teamoutput'] = ' / '.join(teamoutput)
+	output = "%(level)s (%(mode)s) [Round %(roundsPlayed)u/%(roundsTotal)u] %(teamoutput)s" % si
+
 	bot.say(reply, str(output))
 
 	buf = "Goons: "
