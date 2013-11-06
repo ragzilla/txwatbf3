@@ -56,7 +56,7 @@ class watircBot(PyFiBot):
 	
 	def replyto(self, user, channel):		
 		return (channel.lower() == self.nickname.lower()) and self.factory.getNick(user) or channel
-
+	
 	def connectionMade(self):
 		irc.IRCClient.connectionMade(self)
 		self.repeatingPing(30)
@@ -66,6 +66,10 @@ class watircBot(PyFiBot):
 		# rc.subMessage("servers.kfs3.server.onLevelLoaded", self.onLevelLoaded)
 		# rc.subMessage("servers.kfs3.player.onJoin", self.onJoin)
 		# rc.subMessage("servers.kfs3.player.onChat", self.onChat)
+	
+	def connectionLost(self, reason):
+		irc.IRCClient.connectionLost(self, reason)
+		log.info("connection lost: " + str(reason))
 	
 	def sendNotify(self, message):
 		### a shortcut for event driven stuff
