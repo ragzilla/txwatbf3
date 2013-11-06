@@ -10,6 +10,7 @@ class ServerHandler(RestHandler):
 			server = self.settings['root'].getRcon().getInstance(server)
 			if server:
 				result = yield server.serverInfo()
+				result['players'] = yield server.admin_listPlayers()
 				RestHandler.get(self, result)
 				return
 			self.set_status(404)
