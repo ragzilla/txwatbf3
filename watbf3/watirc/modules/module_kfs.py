@@ -40,6 +40,10 @@ def inlinecommand_kfs(bot, user, channel, args):
 
 	bot.say(reply, str(output))
 
+	if len(goons) > 10:
+		bot.say(reply, "Goons: too many to list")
+		return
+
 	buf = "Goons: "
 	for goon in goons:
 		name = goon['bf3name']
