@@ -61,6 +61,8 @@ class ClientRconProtocol(FBRconProtocol):
 	
 	def __init__(self):
 		FBRconProtocol.__init__(self)
+		# need to move some (all?) of these handlers into the parent class, or a mixin, should probably evict the 
+		# modehash/levelhash too
 		self.handlers = {
 			"player.onJoin":          self.player_onJoin,
 			"player.onLeave":         self.player_onLeave,
@@ -78,6 +80,9 @@ class ClientRconProtocol(FBRconProtocol):
 			"server.onRoundOver":     self.nullop,
 			"server.onRoundOverPlayers": self.nullop,
 			"server.onRoundOverTeamScores": self.nullop,
+			"login.hashed": self.nullop,
+			"admin.say": self.nullop,
+			"vars.preset": self.nullop,
 		}
 		self.seq = 1
 		self.callbacks = {}
