@@ -30,29 +30,16 @@ class ClientRconFactory(ReconnectingClientFactory, FBRconFactory):
 		return p
 		
 levelhash = {
-	'MP_001': 'Grand Bazaar',
-	'MP_003': 'Teheran Highway',
-	'MP_007': 'Caspian Border',
-	'MP_011': 'Seine Crossing',
-	'MP_012': 'Operation Firestorm',
-	'MP_013': 'Damavand Peak',
-	'MP_017': 'Noshahar Canals',
-	'MP_018': 'Kharg Island',
-	'MP_Subway': 'Operation Metro',
-	'XP1_001': 'Strike at Karkand',
-	'XP1_002': 'Gulf of Oman',
-	'XP1_003': 'Sharqi Peninsula',
-	'XP1_004': 'Wake Island',
-	'MP_Abandoned': 'Zavod 311',
-	'MP_Damage': 'Lancang Dam',
-	'MP_Flooded': 'Flood Zone',
-	'MP_Journey': 'Golmud Railway',
-	'MP_Naval': 'Paracel Storm',
-	'MP_Prison': 'Operation Locker',
-	'MP_Resort': 'Hainan Resort',
-	'MP_Siege': 'Siege of Shanghai',
-	'MP_TheDish': 'Rogue Transmission',
-	'MP_Tremors': 'Dawnbreaker',
+	'MP_Abandoned': { 'name': 'Zavod 311',          'factions': ['US', 'RU'] },
+	'MP_Damage':    { 'name': 'Lancang Dam',        'factions': ['RU', 'CN'] },
+	'MP_Flooded':   { 'name': 'Flood Zone',         'factions': ['US', 'CN'] },
+	'MP_Journey':   { 'name': 'Golmud Railway',     'factions': ['RU', 'CN'] },
+	'MP_Naval':     { 'name': 'Paracel Storm',      'factions': ['US', 'CN'] },
+	'MP_Prison':    { 'name': 'Operation Locker',   'factions': ['US', 'RU'] },
+	'MP_Resort':    { 'name': 'Hainan Resort',      'factions': ['US', 'CN'] },
+	'MP_Siege':     { 'name': 'Siege of Shanghai',  'factions': ['US', 'CN'] },
+	'MP_TheDish':   { 'name': 'Rogue Transmission', 'factions': ['RU', 'CN'] },
+	'MP_Tremors':   { 'name': 'Dawnbreaker',        'factions': ['US', 'CN'] },
 }
 
 modehash = {
@@ -109,12 +96,16 @@ class ClientRconProtocol(FBRconProtocol):
 			'curPlayers': int(sinfo[2]),
 			'maxPlayers': int(sinfo[3]),
 			'mode': modehash[sinfo[4]],
-			'level': levelhash[sinfo[5]],
+			'level': levelhash[sinfo[5]]['name'],
+			'factions': levelhash[sinfo[5]]['factions'],
 			'roundsPlayed': int(sinfo[6]) + 1,
 			'roundsTotal': int(sinfo[7]),
 			'numTeamScores': int(sinfo[8]),
 		}
 		# process team scores
+
+		## 
+
 		off = 9 + retval['numTeamScores'] # 9 = offset + 1 to get us past the teamScores
 		retval.update({
 			'targetScore':       int(sinfo[off+0]),
@@ -189,7 +180,7 @@ class ClientRconProtocol(FBRconProtocol):
 	### Unhandled event: IsFromServer, Request, Sequence: 132, Words: "server.onLevelLoaded" "MP_007" "ConquestLarge0" "0" "2"
 	def server_onLevelLoaded(self, packet): 
 		params = {
-		'level':    levelhash[packet.words[1]],
+		'level':    levelhash[packet.words[1]]['name'],
 		'mode':     modehash[packet.words[2]],
 		'curRound': int(packet.words[3]) + 1,
 		'maxRound': int(packet.words[4]),
