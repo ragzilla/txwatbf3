@@ -28,7 +28,7 @@ def inlinecommand_lcaust(bot, user, channel, args):
 	for goon in goons:
 		exempt.append(goon['bf3name'])
 	# print exempt
-	numKicks = len(players) - 58
+	numKicks = len(players) - 60
 	if numKicks > 0:
 		shuffle(plist)
 		kicked = []
