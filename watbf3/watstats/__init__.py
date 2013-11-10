@@ -35,6 +35,8 @@ class StatsProvider():
 			personaId = soldier['persona']['personaId']
 			personaName = soldier['persona']['personaName']
 			clanTag = soldier['persona']['clanTag']
+			if clanTag == None:
+				clanTag = ''
 		if personaId == None:
 			defer.succeed(None)
 			return

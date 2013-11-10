@@ -25,4 +25,6 @@ def inlinecommand_stats(bot, user, channel, args):
 	if stats == None:
 		bot.say(reply, "\x02stats\x02: %s not found" % args)
 	else:
-		bot.say(reply, "\x02stats\x02: %(personaName)s: Rank: %(rank)u | Score: %(score)u | Skill: %(skill)u | SPM: %(scorePerMinute)u | KDR: %(kdRatio).2f | WLR: %(wlRatio).2f" % stats)
+		if stats['clanTag'] != '':
+			stats['clanTag'] = "[%(clanTag)s] " % stats
+		bot.say(reply, str("\x02stats\x02: %(clanTag)s%(personaName)s: Rank: %(rank)u | Score: %(score)u | Skill: %(skill)u | SPM: %(scorePerMinute)u | KDR: %(kdRatio).2f | WLR: %(wlRatio).2f" % stats))
