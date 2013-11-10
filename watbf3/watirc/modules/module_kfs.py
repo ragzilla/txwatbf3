@@ -1,6 +1,7 @@
 import logging
 from txmongo.dbref import DBRef
 from twisted.internet import defer
+from time import time
 
 log = logging.getLogger("lcaust")
 
@@ -10,6 +11,13 @@ def inlinecommand_kfs(bot, user, channel, args):
 	mongo = bot.network.data["mongo"] # shortcut
 	rc    = bot.network.data["root"].getRcon()
 	tag   = bot.network.data["tag"]
+
+	if (time() - inlinecommand_kfs.lastrun) < 30: # 30 second cooldown
+		bot.say(reply, "!kfs: stop spamming !lcaust")
+		defer.succeed(None)
+		return
+	
+	inlinecommand_kfs.lastrun = time()
 	
 	# retval = yield rc.sendRcon(tag, ["serverInfo"])
 	instance = rc.getInstance(tag)
@@ -54,3 +62,5 @@ def inlinecommand_kfs(bot, user, channel, args):
 		buf += name + ", "
 	if len(buf) and buf != "Goons: ":
 		bot.say(reply, str(buf[:-2]))
+
+inlinecommand_kfs.lastrun = 0.0

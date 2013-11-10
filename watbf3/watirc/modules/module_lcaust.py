@@ -2,6 +2,7 @@ import logging
 from txmongo.dbref import DBRef
 from twisted.internet import defer
 from random import shuffle
+from time import time
 
 log = logging.getLogger("lcaust")
 
@@ -13,6 +14,13 @@ def inlinecommand_lcaust(bot, user, channel, args):
 	tw    = bot.network.data["root"].getTwitter()
 	tag   = bot.network.data["tag"]
 	inst  = rc.getInstance(tag)
+
+	if (time() - inlinecommand_lcaust.lastrun) < 60: # 60 second cooldown
+		bot.say(reply, "!lcaust: stop spamming !lcaust")
+		defer.succeed(None)
+		return
+	
+	inlinecommand_lcaust.lastrun = time()
 	
 	#retval = yield rc.sendRcon(tag, ["version"])
 	#print retval
@@ -49,3 +57,5 @@ def inlinecommand_lcaust(bot, user, channel, args):
 			tw.update_status(status='Sorry ' + ', '.join(kicked) + ' #kfsbf4')
 	else:
 		bot.say(reply, "!lcaust: Not enough slots in use.")
+
+inlinecommand_lcaust.lastrun = 0.0
