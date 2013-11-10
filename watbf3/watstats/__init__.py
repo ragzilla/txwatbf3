@@ -29,10 +29,12 @@ class StatsProvider():
 		# if a personaId isn't found with gameId 2048 they don't have a bf4 soldier
 		personaId = None
 		personaName = None
+		clanTag = ""
 		for soldier in user['soldiersBox']:
 			if soldier['game'] != 2048: continue
 			personaId = soldier['persona']['personaId']
 			personaName = soldier['persona']['personaName']
+			clanTag = soldier['persona']['clanTag']
 		if personaId == None:
 			defer.succeed(None)
 			return
@@ -55,6 +57,7 @@ class StatsProvider():
 
 		# fix some stats
 		stats['personaName'] = personaName
+		stats['clanTag'] = clanTag
 		stats['kdRatio'] = float(stats['kills']) / float(stats['deaths'])
 		stats['wlRatio'] = float(stats['numWins']) / float(stats['numLosses'])
 
