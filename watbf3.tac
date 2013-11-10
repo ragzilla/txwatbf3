@@ -5,6 +5,10 @@
 This is the watbf3.tac file. This will start up the watbf3 application.
 """
 
+import os, sys
+
+sys.path.append(os.path.join(os.path.dirname(__file__), 'watbf3'))
+
 from twisted.application import service
 from watbf3.service import WATBF3Service
 from twisted.python import usage

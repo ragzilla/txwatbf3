@@ -2,6 +2,7 @@ from twisted.internet import defer
 from cyclone.httpclient import fetch
 from simplejson import loads
 from urllib import quote
+from utils import timedcache
 
 class StatsProvider():
 	headers = { 'X-AjaxNavigation': ['1',], 'User-Agent': ['txwatfbrcon - txwatfbrcon@evilgeni.us',], }
@@ -12,6 +13,7 @@ class StatsProvider():
 		self.root = root
 		self.config = config
 
+	@timedcache.timedCache(minutes=30)
 	@defer.inlineCallbacks
 	def getStats(self, player):
 		response = yield fetch('https://battlelog.battlefield.com/bf4/user/' + quote(player) + '/', headers=self.headers)
