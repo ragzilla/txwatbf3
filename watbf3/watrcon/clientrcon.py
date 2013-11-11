@@ -1,6 +1,9 @@
 import os
 import base64
 import hashlib
+from datetime import datetime  
+from cyclone.httpclient import fetch
+from simplejson import dumps
 from twisted.internet import defer
 from twisted.internet.defer import Deferred
 from twisted.internet.protocol import ReconnectingClientFactory
@@ -210,8 +213,13 @@ class ClientRconProtocol(FBRconProtocol):
 	def player_onLeave(self, packet):
 		self.postMessage("player.onLeave", {'player': packet.words[1]})
 	
+	@defer.inlineCallbacks
 	def player_onChat(self, packet):
 		self.postMessage("player.onChat", {'player': packet.words[1], 'message': packet.words[2]})
+		# should probably refactor this into a plugin, but oh well
+		url = datetime.now().strftime('http://localhost:9200/watbf3-%Y%m%d/onchat/')
+		msg = dumps({'player': packet.words[1], 'message': packet.words[2]})
+		retval = yield fetch(url, postdata=msg)
 	
 	# "player.onTeamChange" "toomuchmoney678" "2" "0"
 	def player_onTeamChange(self, packet):
