@@ -218,7 +218,7 @@ class ClientRconProtocol(FBRconProtocol):
 		self.postMessage("player.onChat", {'player': packet.words[1], 'message': packet.words[2]})
 		# should probably refactor this into a plugin, but oh well
 		utcnow = datetime.utcnow()
-		url = strftime('http://localhost:9200/watbf3-%Y%m%d/onchat/')
+		url = utcnow.strftime('http://localhost:9200/watbf3-%Y%m%d/onchat/')
 		msg = dumps({'player': packet.words[1], 'message': packet.words[2], 'timestamp': utcnow.isoformat() + 'Z'})
 		retval = yield fetch(url, postdata=msg)
 	
