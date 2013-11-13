@@ -62,8 +62,14 @@ class StatsProvider():
 		# fix some stats
 		stats['personaName'] = personaName
 		stats['clanTag'] = clanTag
-		stats['kdRatio'] = float(stats['kills']) / float(stats['deaths'])
-		stats['wlRatio'] = float(stats['numWins']) / float(stats['numLosses'])
+		try:
+			stats['kdRatio'] = float(stats['kills']) / float(stats['deaths'])
+		except ZeroDivisionError:
+			stats['kdRatio'] = 0.0
+		try:
+			stats['wlRatio'] = float(stats['numWins']) / float(stats['numLosses'])
+		except ZeroDivisionError:
+			stats['wlRatio'] = 0.0
 
 		defer.returnValue(stats)
 
