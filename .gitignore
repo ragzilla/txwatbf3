@@ -6,5 +6,6 @@ tmp/
 watbf3.yaml
 stats/
 CommandConsole.py
+EventConsole.py
 ServerInfo.py
 metrics.sh
