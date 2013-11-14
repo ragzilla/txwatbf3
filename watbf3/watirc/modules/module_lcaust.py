@@ -15,7 +15,7 @@ def inlinecommand_lcaust(bot, user, channel, args):
 	tag   = bot.network.data["tag"]
 	inst  = rc.getInstance(tag)
 
-	if (time() - inlinecommand_lcaust.lastrun) < 60: # 60 second cooldown
+	if not bot.factory.isAdmin(user) and (time() - inlinecommand_lcaust.lastrun) < 60: # 60 second cooldown
 		bot.say(reply, "!lcaust: stop spamming !lcaust")
 		defer.succeed(None)
 		return

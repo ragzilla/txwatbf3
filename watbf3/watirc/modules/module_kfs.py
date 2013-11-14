@@ -12,7 +12,7 @@ def inlinecommand_kfs(bot, user, channel, args):
 	rc    = bot.network.data["root"].getRcon()
 	tag   = bot.network.data["tag"]
 
-	if (time() - inlinecommand_kfs.lastrun) < 30: # 30 second cooldown
+	if not bot.factory.isAdmin(user) and (time() - inlinecommand_kfs.lastrun) < 30: # 30 second cooldown
 		bot.say(reply, "!kfs: stop spamming !kfs")
 		defer.succeed(None)
 		return
