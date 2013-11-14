@@ -73,7 +73,7 @@ class ClientRconProtocol(FBRconProtocol):
 			"player.onChat":          self.player_onChat,
 			"player.onTeamChange":    self.player_onTeamChange,
 			"player.onSquadChange":   self.player_onSquadChange,
-			"player.onKill":          self.nullop, # temporary
+			"player.onKill":          self.player_onKill,
 			"server.onLevelLoaded":   self.server_onLevelLoaded,
 			"punkBuster.onMessage":   self.nullop,
 			"player.onSpawn":         self.nullop,
@@ -213,14 +213,28 @@ class ClientRconProtocol(FBRconProtocol):
 	def player_onLeave(self, packet):
 		self.postMessage("player.onLeave", {'player': packet.words[1]})
 	
+	# "player.onKill" "tanketernal" "-nrr-" "Death" "true" 
+	@defer.inlineCallbacks
+	def player_onKill(self, packet):
+		retval = yield self.elasticLog('onkill',  {
+			'player': packet.words[1].lower(),
+			'target': packet.words[2].lower(),
+			'weapon': packet.words[3],
+			'headshot': packet.words[4] == 'true',
+			})
+
+	# "player.onChat" "Server" "Welcome to KFS Trever9191." "player" "Trever9191" 
 	@defer.inlineCallbacks
 	def player_onChat(self, packet):
 		self.postMessage("player.onChat", {'player': packet.words[1], 'message': packet.words[2]})
-		# should probably refactor this into a plugin, but oh well
-		utcnow = datetime.utcnow()
-		url = utcnow.strftime('http://localhost:9200/watbf3-%Y%m%d/onchat/')
-		msg = dumps({'player': packet.words[1], 'message': packet.words[2], 'timestamp': utcnow.isoformat() + 'Z'})
-		retval = yield fetch(url, postdata=msg)
+		if packet.words[1] == 'Server':
+			defer.succeed(None)
+			return
+		retval = yield self.elasticLog('onchat', {
+			'player':  packet.words[1].lower(),
+			'message': packet.words[2],
+			'target':  '/'.join(packet.words[3:]).lower(),
+			})
 	
 	# "player.onTeamChange" "toomuchmoney678" "2" "0"
 	def player_onTeamChange(self, packet):
@@ -229,6 +243,14 @@ class ClientRconProtocol(FBRconProtocol):
 	# "player.onSquadChange" "toomuchmoney678" "2" "3"
 	def player_onSquadChange(self, packet):
 		pass
+	
+	@defer.inlineCallbacks
+	def elasticLog(self, doctype, doc):
+		utcnow = datetime.utcnow()
+		url = utcnow.strftime('http://localhost:9200/watbf3-%Y%m%d/') + doctype + '/'
+		doc['timestamp'] = utcnow.isoformat() + 'Z'
+		retval = yield fetch(url, postdata=dumps(doc))
+		defer.returnValue(retval)
 		
 	@defer.inlineCallbacks
 	def connectionMade(self):
