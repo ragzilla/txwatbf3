@@ -16,8 +16,13 @@ class StatsProvider():
 	@timedcache.timedCache(minutes=30)
 	@defer.inlineCallbacks
 	def getStats(self, player):
-		response = yield fetch('https://battlelog.battlefield.com/bf4/user/' + quote(player) + '/', headers=self.headers)
+		player = player.lower()
 
+		# stubbing in stats from mongo, find a bf3name:
+		bf3name = yield self.root.getMongo().bf3names.find_one({'bf3name': player})
+
+		# pull initial page to get a personaId
+		response = yield fetch('https://battlelog.battlefield.com/bf4/user/' + quote(player) + '/', headers=self.headers)
 		if response.code != 200: 
 			defer.succeed(None)
 			return
@@ -70,6 +75,10 @@ class StatsProvider():
 			stats['wlRatio'] = float(stats['numWins']) / float(stats['numLosses'])
 		except ZeroDivisionError:
 			stats['wlRatio'] = 0.0
+
+		stats['seen'] = None
+		if 'seen' in bf3name.keys() and bf3name['seen'] != None:
+			stats['seen'] = bf3name['seen']
 
 		defer.returnValue(stats)
 
