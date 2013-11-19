@@ -9,6 +9,7 @@ from twisted.internet.defer import Deferred
 from twisted.internet.protocol import ReconnectingClientFactory
 from serverstate.server import Server
 from math import floor
+from txmongo.dbref import DBRef
 
 from fbrcon import FBRconFactory, FBRconProtocol
 
@@ -201,11 +202,31 @@ class ClientRconProtocol(FBRconProtocol):
 		}
 		self.postMessage("server.onLevelLoaded", params)
 
+	# todo: refactor mongo to use upsert?
 	@defer.inlineCallbacks
 	def player_onJoin(self, packet):
+		_now = datetime.now()
+		# try to find existing bf3name/eaguid
 		normal = str(packet.words[1]).lower()
-		isgoon = yield self.mongo.bf3names.count({'bf3name': normal})
-		self.postMessage("player.onJoin", {'player': packet.words[1], 'guid': packet.words[2], 'isgoon': isgoon != 0})
+		bf3name = yield self.mongo.bf3names.find_one({'bf3name': normal}) # a mongo document, or {} on no match
+		eaguid = yield self.mongo.eaguids.find_one({'eaguid': packet.words[2]}) # mongo document, or {} on no match
+		# create eaguid/bf3name if none exist
+		if eaguid == {}:
+			retval = yield self.mongo.eaguids.insert({'eaguid': packet.words[2], 'seen': None})
+			eaguid = yield self.mongo.eaguids.find_one({'eaguid': packet.words[2]})
+		if bf3name == {}:
+			retval = yield self.mongo.bf3names.insert({'bf3name': normal, 'safname': None, 'bf3state': 0, 
+				'eaguid': None, 'seen': None})
+			bf3name = yield self.mongo.bf3names.find_one({'bf3name': normal})
+
+		# update last seen timestamps, and the eaguid
+		bf3name['eaguid'] = DBRef(self.mongo.eaguids, eaguid['_id'])
+		bf3name['seen'] = _now
+		eaguid['seen'] = _now
+		retval = yield self.mongo.bf3names.save(bf3name)
+		retval = yield self.mongo.eaguids.save(eaguid)
+
+		self.postMessage("player.onJoin", {'player': packet.words[1], 'guid': packet.words[2], 'isgoon': bf3name['bf3state'] != 0})
 
 	def player_onAuthenticated(self, packet):
 		self.postMessage("player.onAuthenticated", {'player': packet.words[1]})
