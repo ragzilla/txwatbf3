@@ -101,12 +101,13 @@ class ClientRconProtocol(FBRconProtocol):
 	@defer.inlineCallbacks
 	def serverInfo(self):
 		sinfo = yield self.sendRequest(["serverInfo"])
+		deflevel = { 'name': sinfo[5], 'factions': ['T1', 'T2'] }
 		retval = {
 			'serverName': sinfo[1],
 			'curPlayers': int(sinfo[2]),
 			'maxPlayers': int(sinfo[3]),
 			'mode': modehash[sinfo[4]],
-			'level': levelhash[sinfo[5]]['name'],
+			'level': levelhash.get(sinfo[5], deflevel)['name'],
 			'roundsPlayed': int(sinfo[6]) + 1,
 			'roundsTotal': int(sinfo[7]),
 			'numTeamScores': int(sinfo[8]),
@@ -115,8 +116,8 @@ class ClientRconProtocol(FBRconProtocol):
 
 		if retval['numTeamScores'] == 2:
 			retval['teams'] = [
-				{ 'faction': levelhash[sinfo[5]]['factions'][0], 'score': int(floor(float(sinfo[9])))},
-				{ 'faction': levelhash[sinfo[5]]['factions'][1], 'score': int(floor(float(sinfo[10])))},
+				{ 'faction': levelhash.get(sinfo[5], deflevel)['factions'][0], 'score': int(floor(float(sinfo[9])))},
+				{ 'faction': levelhash.get(sinfo[5], deflevel)['factions'][1], 'score': int(floor(float(sinfo[10])))},
 			]
 		else:
 			retval['teams'] = []
@@ -195,7 +196,7 @@ class ClientRconProtocol(FBRconProtocol):
 	### Unhandled event: IsFromServer, Request, Sequence: 132, Words: "server.onLevelLoaded" "MP_007" "ConquestLarge0" "0" "2"
 	def server_onLevelLoaded(self, packet): 
 		params = {
-		'level':    levelhash[packet.words[1]]['name'],
+		'level':    levelhash.get(packet.words[1], {name: packet.words[1]})['name'],
 		'mode':     modehash[packet.words[2]],
 		'curRound': int(packet.words[3]) + 1,
 		'maxRound': int(packet.words[4]),
