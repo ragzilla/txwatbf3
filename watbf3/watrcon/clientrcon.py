@@ -62,6 +62,7 @@ modehash = {
 	'SquadRush0':     'Squad Rush',
 	'SquadDeathMatch0': 'Squad Deathmatch',
 	'TeamDeathMatch0':  'Team Deathmatch',
+	'AirSuperiority0':  'Air Superiority',
 }
 
 class ClientRconProtocol(FBRconProtocol):
