@@ -45,6 +45,10 @@ levelhash = {
 	'MP_Siege':     { 'name': 'Siege of Shanghai',  'factions': ['US', 'CN'] },
 	'MP_TheDish':   { 'name': 'Rogue Transmission', 'factions': ['RU', 'CN'] },
 	'MP_Tremors':   { 'name': 'Dawnbreaker',        'factions': ['US', 'CN'] },
+	'XP1_001':      { 'name': 'Silk Road',          'factions': ['T1', 'T2'] },
+	'XP1_002':      { 'name': 'Altai Range',        'factions': ['T1', 'T2'] },
+	'XP1_003':      { 'name': 'Guilin Peaks',       'factions': ['T1', 'T2'] },
+	'XP1_004':      { 'name': 'Dragon Pass',        'factions': ['T1', 'T2'] },
 }
 
 modehash = {
