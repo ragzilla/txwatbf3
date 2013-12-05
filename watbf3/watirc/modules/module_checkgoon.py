@@ -20,6 +20,9 @@ def inlinecommand_checkgoon(bot, user, channel, args):
 		else:
 			bot.say(reply, "No match found")
 			return
+	if res[0]['bf3state'] == 0:
+		bot.say(reply, "No match found")
+		return
 	ref   = res[0]['safname']
 	owner = yield mongo[ref.collection].find_one(ref.id)
 	names = []
